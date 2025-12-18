@@ -1,7 +1,6 @@
 import express from "express";
 import morgan from "morgan";
 
-import moviesRouter from "./routes/movies.route";
 import movieRouter from "./routes/movie.route";
 import { notFound } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/error";
@@ -18,7 +17,7 @@ app.get("/", async (_req, res) => {
   res.json(rows[0]);
 });
 
-app.use("/movies", moviesRouter);
+
 app.use("/movie", movieRouter);
 
 app.use(notFound);
