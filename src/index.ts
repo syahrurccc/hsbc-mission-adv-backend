@@ -6,7 +6,6 @@ import movieRouter from "./routes/movie.route";
 import uploadRouter from "./routes/upload.route";
 import { notFound } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/error";
-import * as db from "./db/db"
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
@@ -17,8 +16,7 @@ app.use("/upload", uploadRouter);
 app.use(express.json());
 
 app.get("/", async (_req, res) => {
-  const { rows } = await db.query("SELECT NOW()")
-  res.json(rows[0]);
+  res.json({ status: "ok"});
 });
 
 app.use("/auth", authRouter);

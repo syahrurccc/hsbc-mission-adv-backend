@@ -1,13 +1,25 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import crypto from "node:crypto";
 
-import * as db from "../db/db";
+import { env } from "../env";
 import { throwErr } from "../utils/utils";
 import { registerSchema, loginSchema } from "../validations/zodSchemas";
 import { requireAuth } from "../middlewares/requireAuth";
+import { userRepo } from "../entity/User";
 
 const router = Router();
+const transporter = nodemailer.createTransport({
+  host: env.SMTP_HOST,
+  port: env.SMTP_PORT,
+  secure: false,
+  auth: {
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASS,
+  },
+});
 
 router.post("/register", async (req, res) => {
   const { fullname, username, email, password } = await registerSchema.parseAsync(req.body);
@@ -45,13 +57,13 @@ router.post("/login", async (req, res) => {
       id: user._id.toString(),
       name: user.name,
     },
-    process.env.TOKEN_SECRET!,
+    env.JWT_SECRET,
     { expiresIn: "1h" },
   );
 
   res.cookie("jwt", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
     maxAge: 59 * 60 * 1000,
