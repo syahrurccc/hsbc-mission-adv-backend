@@ -1,5 +1,4 @@
 import { DataSource } from "typeorm";
-import "reflect-metadata";
 
 import { env } from "./env";
 import { Movie } from "./entity/Movie";
@@ -16,9 +15,3 @@ export const AppDataSource = new DataSource({
   synchronize: true,
   logging: false,
 });
-
-try {
-  await AppDataSource.initialize();
-} catch (err) {
-  console.log(err)
-}

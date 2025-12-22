@@ -7,7 +7,7 @@ import { throwErr } from "../utils/utils";
 
 const router = Router();
 
-const filesDir = path.resolve("upload");
+const filesDir = path.resolve("uploads");
 fs.mkdirSync(filesDir, { recursive: true });
 
 const storage = multer.diskStorage({

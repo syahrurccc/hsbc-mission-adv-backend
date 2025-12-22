@@ -4,45 +4,41 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from "typeorm";
 
-import { AppDataSource } from "../dataSource";
-
-export type MovieType = "movie" | "series"
+export type MovieType = "movie" | "series";
 
 @Entity("movies")
 export class Movie {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ length: 100 })
+  @Column({ type: "varchar", length: 100 })
+  @Index()
   title!: string;
 
-  @Column({ length: 100 })
+  @Column({ type: "varchar", length: 100 })
   poster_url!: string;
   
   @Column({ 
-    type: "enum",
-    enum: ["movie", "series"],
-    nullable: true,
-    default: null
+    type: "varchar",
+    length: 10,
   })
+  @Index()
   type!: MovieType;
 
   @Column("text")
   synopsis!: string;
   
-  @Column({ length: 32 })
-  genre!: string;
-  
   @Column("int")
+  @Index()
   year!: number;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updated_at!: Date;
 }
 
-export const movieRepo = AppDataSource.getRepository(Movie);
