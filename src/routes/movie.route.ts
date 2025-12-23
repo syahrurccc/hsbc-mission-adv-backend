@@ -36,7 +36,7 @@ router.get("/", requireAuth, async (req, res) => {
   res.status(200).json(movies);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   const body = movieSchema.parse(req.body);
   const { title, poster_url, type, synopsis, year } = body;
 
@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
   });
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", requireAuth, async (req, res) => {
   const id = Number(req.params.id);
   const movie = await movieRepo.findOneBy({ id });
 
@@ -63,7 +63,7 @@ router.get("/:id", async (req, res) => {
   res.status(200).json(movie);
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", requireAuth, async (req, res) => {
   const body = moviePatchSchema.parse(req.body);
   const id = Number(req.params.id);
   const { title, poster_url, type, synopsis, year } = body;
@@ -85,7 +85,7 @@ router.patch("/:id", async (req, res) => {
   });
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAuth, async (req, res) => {
   const id = Number(req.params.id);
   const { affected } = await movieRepo.delete({ id });
 

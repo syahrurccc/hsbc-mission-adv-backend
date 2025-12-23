@@ -1,9 +1,10 @@
 import { Router } from "express";
 import path from "node:path";
-import fs from "node:fs"
+import fs from "node:fs";
 import multer from "multer";
 
 import { throwErr } from "../utils/utils";
+import { requireAuth } from "../middlewares/requireAuth";
 
 const router = Router();
 
@@ -22,9 +23,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single("poster"), async (req, res) => {
+router.post("/", requireAuth, upload.single("poster"), async (req, res) => {
   if (!req.file) throwErr("No file uploaded", 400);
-  res.status(201).json(req.file);
+  res.status(201).json({
+    message: "File successfully uploaded",
+    file: req.file,
+  });
 });
 
 export default router;

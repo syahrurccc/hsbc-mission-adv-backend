@@ -1,19 +1,20 @@
 import { z } from "zod";
 
 export const movieQuerySchema = z.object({
-  type: z.enum(["movie", "series"]).optional(),
-  year: z.number().positive().min(1800).optional(),
-  sortBy: z.enum(["id", "title", "type", "year"]).optional(),
-  order: z.enum(["ASC", "DESC"]).optional(),
-  search: z.string().trim().optional()
-});
+  type: z.enum(["movie", "series"]),
+  year: z.coerce.number().positive().min(1800),
+  sortBy: z.enum(["id", "title", "type", "year"]),
+  order: z.enum(["ASC", "DESC"]),
+  search: z.string().trim()
+})
+.partial();
 
 export const movieSchema = z.object({
   title: z.string().nonempty().trim(),
   poster_url: z.url(),
   type: z.enum(["movie", "series"]),
   synopsis: z.string().nonempty().trim(),
-  year: z.number().min(1800).positive(),
+  year: z.coerce.number().min(1800).positive(),
 });
 
 export const moviePatchSchema = movieSchema.partial();

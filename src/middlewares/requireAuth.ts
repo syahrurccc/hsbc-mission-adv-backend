@@ -7,7 +7,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.cookies.jwt;
 
   if (!token) {
-    return res.status(401).json({ error: "Missing token" });
+    return res.status(401).json({ error: "Missing JWT token" });
   }
 
   try {

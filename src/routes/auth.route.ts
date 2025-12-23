@@ -2,6 +2,7 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { randomBytes } from "node:crypto";
 
 import { env } from "../env";
 import { throwErr } from "../utils/utils";
@@ -10,10 +11,8 @@ import {
   loginSchema,
   verifyTokenSchema,
 } from "../validations/zodSchemas";
-import { requireAuth } from "../middlewares/requireAuth";
 import { User } from "../entity/User";
 import { AppDataSource } from "../dataSource";
-import { randomBytes } from "node:crypto";
 
 const router = Router();
 const userRepo = AppDataSource.getRepository(User);
@@ -43,7 +42,7 @@ router.post("/register", async (req, res) => {
     await userRepo.save(user);
   } else {
     const hash = await bcrypt.hash(password, 10);
-    await userRepo.save({
+    const newUser = await userRepo.save({
       fullname,
       username,
       email,
@@ -52,6 +51,7 @@ router.post("/register", async (req, res) => {
       token_expires_at: tokenExpiration,
       isActive: false,
     });
+    console.log(newUser);
   }
 
   const info = await transporter.sendMail({
@@ -107,7 +107,6 @@ router.post("/login", async (req, res) => {
 
 router.get("/verify-email/:token", async (req, res) => {
   const token = verifyTokenSchema.parse(req.params.token);
-  console.log(token)
 
   const user = await userRepo.findOneBy({ activation_token: token });
   if (!user) throwErr("Invalid or expired token ", 400);
